@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading News Feed</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        #newsFeed { max-width: 800px; margin: auto; }
+        .news-item { border-bottom: 1px solid #ddd; padding: 10px 0; }
+        .news-item h3 { margin: 0; }
+        .news-item a { color: blue; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <h2>Latest Trading News</h2>
+    <div id="newsFeed">Loading news...</div>
+
+    <script>
+        async function fetchNews() {
+            try {
+                const response = await fetch('http://localhost:5000/news');
+                const data = await response.json();
+
+                let newsContainer = document.getElementById('newsFeed');
+                newsContainer.innerHTML = '';
+
+                data.articles.forEach(article => {
+                    let newsItem = document.createElement('div');
+                    newsItem.classList.add('news-item');
+                    newsItem.innerHTML = `
+                        <h3>${article.title}</h3>
+                        <p>${article.description || 'No description available'}</p>
+                        <a href="${article.url}" target="_blank">Read more</a>
+                    `;
+                    newsContainer.appendChild(newsItem);
+                });
+            } catch (error) {
+                document.getElementById('newsFeed').innerHTML = 'Error fetching news.';
+                console.error(error);
+            }
+        }
+
+        fetchNews(); // Load news on page load
+    </script>
+
+</body>
+</html>
